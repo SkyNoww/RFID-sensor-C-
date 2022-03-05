@@ -1,1 +1,0 @@
-This program is compatible with the module RFID RC522
