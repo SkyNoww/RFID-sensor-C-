@@ -1,0 +1,56 @@
+#include <SPI.h>
+#include <RFID.h>
+
+const char LED_ROUGE = 2; //Brancher a la broche 2
+const char LED_VERTE = 3; //Brancher a la broche 3
+
+RFID moduleRFID (10, 9); //Declaration d'utilisation du module RFID
+
+int ID[5] = {}; //Stockage numero d'identification
+int KEY[5] = {67,139,127,198,113}; //Cles d'identification
+
+void setup()
+{
+	//Definit l'utilisation de la communication spi et du module
+	 Serial.begin(9600);
+	     SPI.begin();
+	         moduleRFID.init();
+     
+     pinMode(LED_ROUGE, OUTPUT);
+         pinMode(LED_VERTE, OUTPUT);
+
+     digitalWrite(LED_ROUGE, LOW);
+         digitalWrite(LED_VERTE, LOW);
+}
+void loop()
+{
+    if (moduleRFID.isCard())
+    {
+    	if (moduleRFID.PICC_ReadCardSerial())
+    	{
+    		 Serial.print("L'ID est : ");
+    		     for(int i = 0; i < 4; i++);
+                      Serial.print(ID[i], DEC);  
+    	}
+      Serial.println("");
+    }
+
+    if (    ID[0] == KEY[0]
+         && ID[1] == KEY[1]
+         && ID[2] == KEY[2]
+         && ID[3] == KEY[3]
+         && ID[4] == KEY[4])
+    {
+         digitalWrite(LED_VERTE, HIGH);
+             delay(500);
+                 digitalWrite(LED_VERTE, LOW);
+    }
+
+    else
+    {
+    	 digitalWrite(LED_ROUGE, HIGH);
+             delay(500);
+                 digitalWrite(LED_ROUGE, LOW);
+    }
+    moduleRFID.halt();
+}
